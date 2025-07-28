@@ -19,7 +19,13 @@ public class FacturaVentaSteps {
     @Given("que el usuario está en la página Factura de Venta")
     public void que_el_usuario_esta_en_la_pagina() throws InterruptedException {
         driver.get(facturaPage.getBaseURLVentas());
-        Thread.sleep(2000);
+        Thread.sleep(3000);
+        WebElement btnMenuVenta = driver.findElement(By.xpath(facturaPage.getBtnMenuVenta()));
+        btnMenuVenta.click();
+        Thread.sleep(3000);
+        WebElement btnRegistrarVenta = driver.findElement(By.xpath(facturaPage.getBtnRegistrarVenta()));
+        btnRegistrarVenta.click();
+        Thread.sleep(6000);
     }
 
     @And("el usuario {string} en el campo de cliente")
@@ -73,11 +79,16 @@ public class FacturaVentaSteps {
     public void el_usuario_selecciona_del_campo_de_productos(String producto) throws InterruptedException {
         WebElement combo = driver.findElement(By.xpath(facturaPage.getProductosCombox()));
         combo.click();
-//        java.util.List<WebElement> opciones = driver.findElements(By.xpath("//li[normalize-space(text())='" + producto + "']"));
-        java.util.List<WebElement> opciones = driver.findElements(By.xpath("//li[normalize-space()='" + producto + "']"));
-        if (!opciones.isEmpty()) {
-            opciones.get(0).click();
-        } else {
+        java.util.List<WebElement> opciones = driver.findElements(By.xpath("//li"));
+        boolean seleccionado = false;
+        for (WebElement opcion : opciones) {
+            if (opcion.getText().trim().equalsIgnoreCase(producto.trim())) {
+                opcion.click();
+                seleccionado = true;
+                break;
+            }
+        }
+        if (!seleccionado) {
             throw new NoSuchElementException("No se encontró el producto: " + producto);
         }
         Thread.sleep(300);
@@ -90,11 +101,13 @@ public class FacturaVentaSteps {
         Thread.sleep(500);
     }
 
-    @And("El usuario adiciona una unidad de cantidad al Producto")
-    public void el_usuario_adiciona_una_unidad_de_cantidad_al_producto() throws InterruptedException {
+    @And("El usuario adiciona una unidad de cantidad de {string} al Producto")
+    public void el_usuario_adiciona_una_unidad_de_cantidad_al_producto(String cantidad) throws InterruptedException {
         WebElement button = driver.findElement(By.xpath(facturaPage.getButtonAdicionarCantidad()));
+        int veces = Integer.parseInt(cantidad);
+        for (int i = 1; i < veces; i++)
         button.click();
-        Thread.sleep(8000);
+        Thread.sleep(300);
     }
 
     @When("El usuario hace clic en el botón registrar venta")
@@ -104,10 +117,10 @@ public class FacturaVentaSteps {
         Thread.sleep(1500);
     }
 
-    @Then("El sistema debe mostrar que la factura fue generada exitosamente con id {string}")
-    public void el_sistema_debe_mostrar_que_la_factura_fue_generada_exitosamente(String codigo) {
-        List<WebElement> secondRow = driver.findElements(By.xpath("//table/tbody/tr/td[2]"));
-        boolean encontrado = secondRow.stream().anyMatch(cell -> cell.getText().trim().equals(codigo));
-        Assert.assertTrue("El código del cliente no fue encontrado en la tabla: " + codigo, encontrado);
+    @Then("El sistema debe mostrar que la factura fue generada exitosamente")
+    public void el_sistema_debe_mostrar_que_la_factura_fue_generada_exitosamente() {
+        WebElement mensajeElemento = driver.findElement(By.xpath("/html/body/div[2]/main/div/div/div[1]/div[2]"));
+        Assert.assertEquals(mensajeElemento.getText(), "Venta registrada correctamente.");
+
     }
 }
