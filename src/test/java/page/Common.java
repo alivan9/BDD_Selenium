@@ -30,12 +30,12 @@ public class Common {
         return webDriver;
     }
 
-    public void startBrowser(CMSPortalWebElementsPath cmsPortalWebElementsPath, WebDriver webDriver) {
-        System.setProperty(webDriverChrome, chromeDriverPath);
-        webDriver = new ChromeDriver();
-        webDriver.manage().window().maximize();
-        webDriver.get(cmsPortalWebElementsPath.getBaseURL());
-    }
+//    public void startBrowser(CMSPortalWebElementsPath cmsPortalWebElementsPath, WebDriver webDriver) {
+//        System.setProperty(webDriverChrome, chromeDriverPath);
+//        webDriver = new ChromeDriver();
+//        webDriver.manage().window().maximize();
+//        webDriver.get(cmsPortalWebElementsPath.getBaseURL());
+//    }
 
     public void startBrowserWithWait(WebDriver webDriver, String baseUrl) {
         System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver");
