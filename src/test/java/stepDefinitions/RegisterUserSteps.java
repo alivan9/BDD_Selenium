@@ -20,6 +20,7 @@ public class RegisterUserSteps {
 
     @Given("que el usuario está en la página {string}")
     public void que_el_usuario_esta_en_la_pagina(String pagina) throws InterruptedException {
+        Thread.sleep(3000);
         driver.get(registerPage.getBaseURLCliente());
         Thread.sleep(2000);
     }
@@ -82,10 +83,18 @@ public class RegisterUserSteps {
     }
 
     @Then("el sistema debe mostrar que el codigo del cliente {string} fue registrado exitosamente")
-    public void el_sistema_debe_mostrar_mensaje_exito(String codigo) {
-        List<WebElement> secondRow = driver.findElements(By.xpath("//table/tbody/tr/td[2]"));
-        boolean encontrado = secondRow.stream().anyMatch(cell -> cell.getText().trim().equals(codigo));
-        Assert.assertTrue("El código del cliente no fue encontrado en la tabla: " + codigo, encontrado);
+    public void el_sistema_debe_mostrar_mensaje_exito(String cliente) {
+        // Busca el mensaje de éxito en la notificación o alerta
+        WebElement mensajeElemento = driver.findElement(By.xpath("/html/body/div[2]/main/div/div/div/div/div[2]"));
+        String mensaje = mensajeElemento.getText().trim();
+
+        // Puedes ajustar el mensaje esperado según cómo lo muestre tu sistema
+        String mensajeEsperado = "Cliente " + cliente + " registrado correctamente.";
+
+        Assert.assertTrue(
+            "No se encontró el mensaje esperado. Mensaje real: " + mensaje,
+            mensaje.contains(mensajeEsperado)
+        );
     }
 
     private static String getText(WebElement cell) {
